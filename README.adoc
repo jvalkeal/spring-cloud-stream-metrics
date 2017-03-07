@@ -10,6 +10,8 @@ so those could be visualized on the UI
 
 == Spring Cloud Stream Metrics module
 
+To start using, build this module and add as a dependency to your stream app.
+
 The `spring-cloud-stream-metrics` module is responsible to publish the metrics.
 To enable on your app, you need to *activate* the metrics destination by setting a property, this is aligned with what we do today with the ErrorChannel binding.
 
@@ -26,4 +28,4 @@ includes::
 A regex of which metrics to publish, defaults to only integration channel metrics: `integration**`, uses same convention as Boot metrics includes
 
 excludes::
-A regex of which metrics to exclude from publishing.  Uses same convention as Boot metrics includes  
+A regex of which metrics to exclude from publishing.  Uses same convention as Boot metrics includes

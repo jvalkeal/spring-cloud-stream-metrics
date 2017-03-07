@@ -1,0 +1,29 @@
+== Spring Cloud Stream Metrics
+
+This repo is a placeholder for a future release of metrics integration into Spring Cloud Stream and Spring Cloud Dataflow.
+
+== 9999ft overview
+The current proposal is to have an separate channel binder to apps that will publish Spring Boot metrics to a destination.
+A sidecar application will be provided by Spring Cloud Dataflow that will aggregate the channel metrics from apps and present it to the UI.
+The goal of the project is to offer an instant view (no historical data) of Spring integration channel metrics (sendRate, receiveRate, errorRate)
+so those could be visualized on the UI
+
+== Spring Cloud Stream Metrics module
+
+The `spring-cloud-stream-metrics` module is responsible to publish the metrics.
+To enable on your app, you need to *activate* the metrics destination by setting a property, this is aligned with what we do today with the ErrorChannel binding.
+
+----
+spring.cloud.stream.bindings.streamMetrics.destination=<ANY>
+----
+
+You can also specify the following properties (prefixed by `spring.cloud.stream.metrics`):
+
+delay-millis::
+How often should metrics be published, defaults to 5000
+
+includes::
+A regex of which metrics to publish, defaults to only integration channel metrics: `integration**`, uses same convention as Boot metrics includes
+
+excludes::
+A regex of which metrics to exclude from publishing.  Uses same convention as Boot metrics includes  

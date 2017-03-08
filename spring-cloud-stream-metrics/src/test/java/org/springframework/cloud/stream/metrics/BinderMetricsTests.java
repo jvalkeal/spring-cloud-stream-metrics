@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.stream.metrics.exporter.ApplicationMetrics;
 import org.springframework.cloud.stream.metrics.exporter.Metrics;
@@ -38,7 +39,6 @@ import org.springframework.messaging.Message;
  */
 public class BinderMetricsTests {
 
-	private ObjectMapper mapper = new ObjectMapper();
 
 	@Test(expected = NoSuchBeanDefinitionException.class)
 	public void checkDisabledConfiguration() throws Exception {
@@ -69,6 +69,7 @@ public class BinderMetricsTests {
 		MessageCollector collector = applicationContext.getBean(MessageCollector.class);
 		Message message = collector.forChannel(metricsSource.output()).poll(1000, TimeUnit.MILLISECONDS);
 		Assert.assertNotNull(message);
+		ObjectMapper mapper = applicationContext.getBean(ObjectMapper.class);
 		ApplicationMetrics applicationMetrics = mapper.readValue((String)message.getPayload(),ApplicationMetrics.class);
 		Assert.assertTrue(contains("integration.channel.errorChannel.errorRate.mean", applicationMetrics.getMetrics()));
 		Assert.assertFalse(contains("mem",applicationMetrics.getMetrics()));
@@ -88,16 +89,17 @@ public class BinderMetricsTests {
 		MessageCollector collector = applicationContext.getBean(MessageCollector.class);
 		Message message = collector.forChannel(metricsSource.output()).poll(1000, TimeUnit.MILLISECONDS);
 		Assert.assertNotNull(message);
+		ObjectMapper mapper = applicationContext.getBean(ObjectMapper.class);
 		ApplicationMetrics applicationMetrics = mapper.readValue((String)message.getPayload(),ApplicationMetrics.class);
 		Assert.assertFalse(contains("integration.channel.errorChannel.errorRate.mean", applicationMetrics.getMetrics()));
 		Assert.assertTrue(contains("mem",applicationMetrics.getMetrics()));
 		applicationContext.close();
 	}
 
-	private boolean contains(String metric, Collection<Map<String,Number>> metrics){
+	private boolean contains(String metric, Collection<Metric> metrics){
 		boolean contains = false;
-		for(Map<String,Number> entry : metrics){
-			contains = entry.containsKey(metric);
+		for(Metric entry : metrics){
+			contains = entry.getName().equals(metric);
 			if(contains){
 				break;
 			}

@@ -58,12 +58,12 @@ public class BinderMetricsEmitter {
 	 * Shameless copied from {@link MetricCopyExporter}
 	 * @return
 	 */
-	protected Collection<Map<String, Number>> filter(){
-		Collection<Map<String, Number>> result = new ArrayList<>();
+	protected Collection<Metric> filter(){
+		Collection<Metric> result = new ArrayList<>();
 		Iterable<Metric<?>> metrics = metricsReader.findAll();
 		for(Metric metric : metrics){
 			if(isMatch(metric)){
-				result.add(Collections.singletonMap(metric.getName(),metric.getValue()));
+				result.add(metric);
 			}
 		}
 		return result;

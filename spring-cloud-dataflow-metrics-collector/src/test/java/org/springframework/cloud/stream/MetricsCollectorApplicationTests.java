@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.metrics.exporter;
+package org.springframework.cloud.stream;
 
-import org.springframework.cloud.stream.annotation.Output;
-import org.springframework.messaging.MessageChannel;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-/**
- * @author Vinicius Carvalho
- */
-public interface Metrics {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class MetricsCollectorApplicationTests {
 
-	final String METRICS_CHANNEL_NAME = "streamMetrics";
+	@Test
+	public void contextLoads() {
+	}
 
-	@Output(METRICS_CHANNEL_NAME)
-	MessageChannel output();
 }

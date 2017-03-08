@@ -17,14 +17,17 @@
 package org.springframework.cloud.stream.metrics;
 
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.binder.Binder;
 import org.springframework.cloud.stream.metrics.exporter.BinderMetricsEmitter;
 import org.springframework.cloud.stream.metrics.exporter.Metrics;
 import org.springframework.cloud.stream.metrics.exporter.StreamMetricsProperties;
+import org.springframework.cloud.stream.metrics.exporter.utils.MetricJsonSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -42,5 +45,10 @@ public class BinderMetricsAutoConfiguration {
 	@Bean
 	public BinderMetricsEmitter binderMetricsExporter(MetricsEndpoint endpoint) {
 		return new BinderMetricsEmitter(endpoint);
+	}
+
+	@Bean
+	public MetricJsonSerializer metricJsonSerializer() {
+		return new MetricJsonSerializer();
 	}
 }

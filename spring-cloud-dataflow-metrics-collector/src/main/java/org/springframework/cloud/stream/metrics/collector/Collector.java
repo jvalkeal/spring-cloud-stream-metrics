@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.metrics.exporter;
+package org.springframework.cloud.stream.metrics.collector;
 
-import org.springframework.cloud.stream.annotation.Output;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.cloud.stream.annotation.Input;
+import org.springframework.messaging.SubscribableChannel;
 
 /**
  * @author Vinicius Carvalho
  */
-public interface Metrics {
-
+public interface Collector {
 	final String METRICS_CHANNEL_NAME = "streamMetrics";
-
-	@Output(METRICS_CHANNEL_NAME)
-	MessageChannel output();
+	@Input(METRICS_CHANNEL_NAME) SubscribableChannel input();
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.metrics.exporter;
+package org.springframework.cloud.stream.metrics.collector;
 
 import java.util.Collection;
 import java.util.Date;
@@ -78,4 +78,6 @@ public class ApplicationMetrics {
 	public Date getCreatedTime() {
 		return createdTime;
 	}
+
+
 }

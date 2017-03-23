@@ -16,26 +16,31 @@
 
 package org.springframework.cloud.stream.metrics;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Sink;
-import org.springframework.cloud.stream.metrics.collector.utils.MetricJsonSerializer;
-import org.springframework.context.annotation.Bean;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.cloud.stream.metrics.collector.ApplicationMetrics;
 
 /**
  * @author Vinicius Carvalho
  */
-@SpringBootApplication
-@EnableBinding(Sink.class)
-public class MetricsCollectorApplication {
+public class GroupedMetrics {
+	private String name;
+	private Set<ApplicationMetrics> instances = new HashSet<>();
 
-	public static void main(String[] args) {
-		SpringApplication.run(MetricsCollectorApplication.class, args);
+	public String getName() {
+		return name;
 	}
 
-	@Bean
-	public MetricJsonSerializer jsonSerializer(){
-		return new MetricJsonSerializer();
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Set<ApplicationMetrics> getInstances() {
+		return instances;
+	}
+
+	public void setInstances(Set<ApplicationMetrics> instances) {
+		this.instances = instances;
 	}
 }

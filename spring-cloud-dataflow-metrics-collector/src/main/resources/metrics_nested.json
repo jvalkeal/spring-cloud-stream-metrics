@@ -1,0 +1,21 @@
+{
+  "settings" : {
+    "index" : {
+      "number_of_shards" : 5,
+      "number_of_replicas" : 0
+    }
+  },
+
+  "mappings" : {
+    "metrics" : {
+      "properties" : {
+        "name" : {"type" : "keyword","index" : "true", "ignore_above": 1024},
+        "group" : {"type" : "keyword", "index" : "true", "ignore_above": 1024},
+        "instanceIndex" : {"type" : "integer"},
+        "@timestamp" : {"type" : "date"},
+        "metrics" : {"type" : "nested"}
+
+      }
+    }
+  }
+}

@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.metrics.collector;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -34,7 +33,7 @@ public class ApplicationMetrics {
 
 	private String name;
 
-	private String id;
+	private String instanceIndex;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
 	private final Date createdTime;
@@ -43,10 +42,10 @@ public class ApplicationMetrics {
 
 	@JsonCreator
 	public ApplicationMetrics(@JsonProperty("name") String name,
-			@JsonProperty("id") String id,
+			@JsonProperty("instanceIndex") String id,
 			@JsonProperty("metrics") Collection<Metric> metrics) {
 		this.name = name;
-		this.id = id;
+		this.instanceIndex = id;
 		this.metrics = metrics;
 		this.createdTime = new Date();
 	}
@@ -59,12 +58,12 @@ public class ApplicationMetrics {
 		this.name = name;
 	}
 
-	public String getId() {
-		return id;
+	public String getInstanceIndex() {
+		return instanceIndex;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setInstanceIndex(String instanceIndex) {
+		this.instanceIndex = instanceIndex;
 	}
 
 	public Collection<Metric> getMetrics() {
@@ -79,5 +78,21 @@ public class ApplicationMetrics {
 		return createdTime;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
+		ApplicationMetrics that = (ApplicationMetrics) o;
+
+		if (name != null ? !name.equals(that.name) : that.name != null) return false;
+		return instanceIndex != null ? instanceIndex.equals(that.instanceIndex) : that.instanceIndex == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + (instanceIndex != null ? instanceIndex.hashCode() : 0);
+		return result;
+	}
 }

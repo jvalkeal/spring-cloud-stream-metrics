@@ -17,53 +17,47 @@
 package org.springframework.cloud.stream.metrics.collector;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.cloud.stream.metrics.GroupedMetrics;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Vinicius Carvalho
  */
 @Component
+@RestController
 public class MetricsAggregator {
 
 
+	private Map<String,GroupedMetrics> groupedMetrics = new ConcurrentHashMap<>();
 	private Map<String,Set<String>> groupIndex = new ConcurrentHashMap<>();
 
-	private Map<String,ApplicationMetrics> groupedMetrics = new ConcurrentHashMap<>();
 
-	@StreamListener(Collector.METRICS_CHANNEL_NAME)
+	@StreamListener(Sink.INPUT)
 	public void receive(ApplicationMetrics metrics) {
-		String appMetrics = metrics.getName()+"_"+metrics.getId();
-		groupedMetrics.put(appMetrics,metrics);
-		Set<String> metricsGroup = groupIndex.get(metrics.getName());
-		if(metricsGroup == null){
-			metricsGroup = new HashSet<>();
-			groupIndex.put(metrics.getName(),metricsGroup);
+		GroupedMetrics group = groupedMetrics.get(metrics.getName());
+		if(group == null){
+			group = new GroupedMetrics();
+			group.setName(metrics.getName());
+			group.getInstances().add(metrics);
+			groupedMetrics.put(metrics.getName(),group);
+		}else{
+			group.getInstances().remove(metrics);
+			group.getInstances().add(metrics);
 		}
-		metricsGroup.add(appMetrics);
-		groupedMetrics.put(appMetrics,metrics);
 	}
 
-	public Collection<ApplicationMetrics> findAll(){
+	@RequestMapping(value = "/collector/metrics", method = RequestMethod.GET)
+	public Collection<GroupedMetrics> findAll(){
 		return groupedMetrics.values();
-	}
-
-	public Collection<ApplicationMetrics> findByAppName(String appName ){
-		Set<String> appIndexes = groupIndex.get(appName);
-		if(appIndexes == null){
-			return Collections.emptyList();
-		}
-		Set<ApplicationMetrics> metrics = new HashSet<>();
-		for(String key : appIndexes){
-			metrics.add(groupedMetrics.get(key));
-		}
-		return metrics;
 	}
 
 }
